@@ -57,6 +57,16 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", List.of());
     }
 
+    @ExceptionHandler(InvalidTransactionException.class)
+    public ResponseEntity<ApiError> handleInvalidTransaction(InvalidTransactionException ex) {
+        return build(HttpStatus.BAD_REQUEST, ex.getMessage(), List.of());
+    }
+
+    @ExceptionHandler(InsufficientFundsException.class)
+    public ResponseEntity<ApiError> handleInsufficientFunds(InsufficientFundsException ex) {
+        return build(HttpStatus.CONFLICT, ex.getMessage(), List.of());
+    }
+
     private ResponseEntity<ApiError> build(HttpStatus status, String message, List<String> details) {
         ApiError body = new ApiError(status.value(), status.getReasonPhrase(), message, Instant.now(), details);
         return ResponseEntity.status(status).body(body);
